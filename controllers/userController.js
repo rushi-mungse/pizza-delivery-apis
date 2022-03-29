@@ -1,7 +1,8 @@
 class UserController {
   getUserInfo(req, res, next) {
-    res.json({ msg: "all ok" });
+    const { name, email, passward } = req.body;
+    res.json({ userInfo: req.body });
   }
 }
 
-module.exports = new UserController();
+export default new UserController();

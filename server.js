@@ -1,10 +1,11 @@
-const dotenv = require("dotenv");
+import dotenv from "dotenv";
 dotenv.config();
 
-const express = require("express");
+import express from "express";
 const app = express();
+import router from "./routers";
 
-const router = require("./routers");
+app.use(express.json());
 app.use("/api", router);
 
 const port = process.env.PORT || 5500;
