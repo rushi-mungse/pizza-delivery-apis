@@ -2,6 +2,7 @@ import Joi from "joi";
 import { User } from "../../models";
 import CustomErroHandler from "../../services/CustomErrorHandler";
 import bcrypt from "bcrypt";
+import JwtService from "../../services/JwtService";
 
 class RegisterController {
   async registerUser(req, res, next) {
@@ -17,6 +18,7 @@ class RegisterController {
     const { error } = registerSchema.validate(req.body);
     if (error) return next(error);
 
+    let accessToken;
     try {
       const exist = await User.findOne({ email });
       if (exist) {
@@ -27,21 +29,19 @@ class RegisterController {
 
       const hashPassword = await bcrypt.hash(password, 10);
 
-      try {
-        const user = new User({
-          name,
-          email,
-          password: hashPassword,
-        });
-        const result = await user.save();
-      } catch (error) {
-        return next(error);
-      }
+      const user = new User({
+        name,
+        email,
+        password: hashPassword,
+      });
+
+      const result = await user.save();
+      accessToken = JwtService.signToken({ id: result._id });
+
+      return res.status(200).json({ accessToken });
     } catch (error) {
       return next(error);
     }
-
-    res.json({ msg: req.body });
   }
 }
 
