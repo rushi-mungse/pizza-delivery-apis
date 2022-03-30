@@ -12,6 +12,10 @@ class CustomErroHandler extends Error {
   static wrongAuthentication(message) {
     return new CustomErroHandler(401, message);
   }
+
+  static errorHanlder(statusCode, message) {
+    return new CustomErroHandler(statusCode, message);
+  }
 }
 
 export default CustomErroHandler;
