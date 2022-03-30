@@ -3,6 +3,7 @@ import { User } from "../../models";
 import CustomErroHandler from "../../services/CustomErrorHandler";
 import bcrypt from "bcrypt";
 import JwtService from "../../services/JwtService";
+import { JWT_REFRESH_SECRET } from "../../config";
 
 class RegisterController {
   async registerUser(req, res, next) {
@@ -19,6 +20,7 @@ class RegisterController {
     if (error) return next(error);
 
     let accessToken;
+    let refreshToken;
     try {
       const exist = await User.findOne({ email });
       if (exist) {
@@ -37,8 +39,13 @@ class RegisterController {
 
       const result = await user.save();
       accessToken = JwtService.signToken({ id: result._id });
+      refreshToken = JwtService.signToken(
+        { id: result._id },
+        JWT_REFRESH_SECRET,
+        "1y"
+      );
 
-      return res.status(200).json({ accessToken });
+      return res.status(200).json({ accessToken, refreshToken });
     } catch (error) {
       return next(error);
     }

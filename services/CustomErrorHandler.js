@@ -8,6 +8,10 @@ class CustomErroHandler extends Error {
   static alreadyExist(message) {
     return new CustomErroHandler(409, message);
   }
+
+  static wrongAuthentication(message) {
+    return new CustomErroHandler(401, message);
+  }
 }
 
 export default CustomErroHandler;
